@@ -24,6 +24,9 @@ La aplicación calcula honorarios a partir de las fórmulas del archivo fuente. 
 La interfaz muestra: **Idea y desarrollo por el Arq. Diego Peregrina**.
 
 ## Asistente Chai
-La aplicación incorpora una primera interfaz de consulta llamada **Chai**. En GitHub Pages funciona en modo de guía local para dudas frecuentes sobre FR, FC, CBM, FS, alcance y lectura de resultados.
 
-Para convertir Chai en un agente con IA real, debe configurarse un endpoint seguro (por ejemplo, una función serverless en Vercel, Netlify o Cloudflare). No coloque una API key dentro de `index.html`, porque quedaría expuesta públicamente. El código ya incluye la constante `CHAI_ENDPOINT` para conectar ese servicio posteriormente.
+La aplicación incorpora **Chai**, un asistente local integrado en la propia calculadora. No utiliza API, backend, cuenta externa ni servicios de inteligencia artificial de pago. Sus respuestas se generan mediante reglas y una base de conocimiento incluida en `index.html`.
+
+Chai puede explicar FR, FC, CBM, SMD, FS, fórmulas, alcances, mapa regional, género constructivo y los resultados visibles en el módulo activo. Si una consulta está fuera de ese dominio, lo indica expresamente en lugar de generar una respuesta abierta.
+
+Todo el procesamiento de Chai se ejecuta en el navegador y no genera costo por consulta.
