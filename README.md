@@ -1,43 +1,45 @@
-# Calculadora de Honorarios para Arquitectos y Constructores de Sinaloa
+# Calculadora de honorarios profesionales FCARM
 
-Aplicación web estática para estimar honorarios profesionales de arquitectura con base en los parámetros y fórmulas incorporados del archivo Formula-Aranceles-FCARM-2022.xlsx.
+Aplicación web estática para estimar honorarios profesionales con base en las fórmulas y factores constructivos del documento de aranceles FCARM 2022 proporcionado para el proyecto.
 
-Funciones
+## Funciones principales
 
-Diseño arquitectónico con catálogo completo de factores de género constructivo.
+- Diseño arquitectónico, diseño urbano y consultoría / DRO.
+- Identificación del profesionista mediante nombre completo y cédula opcional.
+- Géneros constructivos organizados por categoría y tipo de proyecto para facilitar la consulta de los 181 factores incorporados.
+- Factor Regional mediante selección **Región → Colegio / zona → FR**.
+- Selección inicial: **Región V · Colegio de Arquitectos de Sinaloa, A.C. · FR 0.95**.
+- Tabla compacta con los valores de FR presentes en cada una de las siete regiones.
+- Mapa regional de México colocado junto al selector de FR.
+- Alcances y servicios adicionales seleccionables.
+- Impresión / guardado como PDF.
+- Descarga de una cotización editable en formato HTML autónomo, con la misma línea visual de la calculadora.
+- Asistente local Chai, sin API ni costo por consulta.
 
-Diseño urbano.
+## Publicar o actualizar en GitHub Pages
 
-Consultoría / DRO.
+1. Sube `index.html` a la raíz del repositorio.
+2. Si GitHub Pages ya está configurado en `main / (root)`, solo realiza un nuevo commit.
+3. GitHub Pages conservará la misma dirección pública y desplegará la nueva versión.
 
-Factor Regional por colegio/zona, agrupado en Regiones I–VII.
+## Uso local
 
-Sinaloa como referencia inicial: Región V · Colegio de Arquitectos de Sinaloa, A.C. · FR 0.95.
+Abre `index.html` directamente en un navegador. No necesita instalación ni servidor. El mapa usa una geometría GeoJSON pública y requiere conexión para visualizarse; los cálculos y selectores continúan funcionando aunque el mapa no cargue.
 
-Tabla resumida de FR y mapa regional de México.
+## Factor Regional
 
-Selección de alcances y servicios adicionales.
+Los valores FR incorporados proceden de la tabla de colegios y factores proporcionada para esta versión. El FR no se trata como un valor único por región: algunas regiones contienen colegios con factores diferentes. Por ello la interfaz exige seleccionar el colegio o zona concreta después de seleccionar la región.
 
-Chai, asistente local de consulta, sin API ni costo por uso.
+## Parámetros de referencia
 
-# Impresión / guardado PDF.
+El documento fuente indica CBM = $8,025 y SMD = $172.87. Ambos permanecen editables y se presentan como valores de referencia del documento 2022, no como afirmación de vigencia actual.
 
-Vista previa de propuesta profesional.
-
-Descarga de cotización editable para Microsoft Word en formato .docx real (OOXML), generado directamente en el navegador.
-
-Autoría visible: Idea y desarrollo por el Arq. Diego Peregrina.
-
-# Publicación
-
-El sitio funciona en GitHub Pages. index.html es el punto de entrada.
-
-No requiere Node.js, backend, API ni servidor para calcular, consultar a Chai o generar la propuesta Word. El mapa regional usa Leaflet y cartografía GeoJSON cargada desde CDN, por lo que requiere conexión a internet para mostrarse.
-
-# Nota de referencia
-
-Los valores CBM y SMD incorporados corresponden al documento fuente 2022 y permanecen editables. La tabla de FR se integró con los valores proporcionados para los colegios y zonas. Verifique vigencia y aplicabilidad antes de formalizar una contratación profesional.
+La calculadora estima honorarios. No sustituye un presupuesto de obra por catálogo de conceptos y análisis de precios unitarios.
 
 ## Autoría
 
-Idea y desarrollo por el Arq. Diego Peregrina.
+**Idea y desarrollo por el Arq. Diego Peregrina**
+
+## Chai
+
+Chai es un asistente local integrado en la calculadora. Sus respuestas se generan mediante reglas y una base de conocimiento incluida en `index.html`; no utiliza API, backend ni servicios externos de inteligencia artificial de pago. Si una consulta queda fuera de su dominio, lo indica expresamente.
