@@ -81,106 +81,6 @@ label{display:block;font-size:.92rem;margin:0 0 12px} input,select{width:100%;fo
     <div class="proposal-paper"><div class="proposal-paper-inner" id="proposalPreview"></div></div>
   </div>
 </section>
-
-</main>
-<footer><div class="wrap"><div class="author-credit">Idea y desarrollo por el Arq. Diego Peregrina</div><div>Fuente de parámetros y fórmulas: archivo proporcionado “Formula-Aranceles-FCARM-2022.xlsx”. El libro identifica CBM $8,025 como aprobado por Asamblea FCARM Campeche, noviembre de 2021, vigente 2022. La tabla de FR fue incorporada con la información proporcionada para esta versión y debe verificarse su vigencia antes de uso profesional formal. Los cálculos se realizan localmente en el navegador.</div></div></footer>
-<button id="chaiLaunch" class="chai-launch" type="button" aria-controls="chaiPanel" aria-expanded="false">Consultar a Chai</button>
-<aside id="chaiPanel" class="chai-panel" aria-label="Asistente Chai">
-  <div class="chai-head"><div><strong>Chai</strong><div style="font-size:.78rem;color:var(--muted)">Asistente de la calculadora</div></div><button id="chaiClose" class="chai-close" type="button" aria-label="Cerrar">×</button></div>
-  <div id="chaiBody" class="chai-body" aria-live="polite">
-    <div class="chai-msg bot">Puedo explicar el arancel, interpretar el cálculo actual y responder dudas sobre el uso de la herramienta. Trabajo localmente dentro de esta calculadora y no utilizo servicios externos.</div>
-    <div class="quick-chips"><button type="button" data-q="¿Qué es el FR?">¿Qué es el FR?</button><button type="button" data-q="¿Qué es el FC?">¿Qué es el FC?</button><button type="button" data-q="¿Cómo se calcula el honorario?">¿Cómo se calcula?</button><button type="button" data-q="¿Qué significa alcance?">¿Qué es alcance?</button></div>
-  </div>
-  <div class="chai-mode"><span id="chaiModeText">Modo: asistente local · sin costo por consulta.</span></div>
-  <div class="chai-form"><input id="chaiInput" type="text" placeholder="Escribe tu duda…" aria-label="Pregunta para Chai"><button id="chaiSend" type="button">Enviar</button></div>
-</aside>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js">
-// ===== Propuesta profesional: integración local sin backend =====
-let proposalSourceTab='arch';
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function selectedScopes(containerId){
-  return [...$(containerId).querySelectorAll('.check')].filter(x=>x.querySelector('input')?.checked).map(x=>({
-    name:x.querySelector('label')?.textContent.replace(/\s·\s[\d.]+%$/,'')||'Servicio',
-    pct:Number(x.querySelector('input')?.dataset.pct||0)
-  }));
-}
-function currentProposalData(){
-  calcAll();
-  const professional=$('profName').value.trim()||'Profesionista no indicado';
-  const license=$('profLicense').value.trim();
-  const client=$('qClient').value.trim();
-  const project=$('qProject').value.trim();
-  const location=$('qLocation').value.trim();
-  const validity=Math.max(1,Number($('qValidity').value)||15);
-  const payment=$('qPayment').value.trim();
-  const notes=$('qNotes').value.trim();
-  const today=new Intl.DateTimeFormat('es-MX',{day:'2-digit',month:'long',year:'numeric'}).format(new Date());
-  if(proposalSourceTab==='urban'){
-    const S=Math.max(.01,+$('uS').value||0),smd=+$('uSMD').value||0,type=$('uType').value,d=+$('uD').value||0,fs=1050-125*Math.log10(S),fd=densityFactor(type,d),h=S*fs*smd*fd,p=pct($('urban'));
-    return {module:'Diseño urbano',professional,license,client,project,location,validity,payment,notes,today,total:h*p/100,base:h,pct:p,
-      parameters:[['Superficie',`${dec(S,2)} ha`],['SMD',mxn(smd)],['Factor de superficie (FS)',dec(fs,2)],['Factor de densidad (FD)',dec(fd,2)]],
-      scopes:[...selectedScopes('uScopes'),...selectedScopes('uExtras')]};
-  }
-  if(proposalSourceTab==='dro'){
-    const H=+$('dH').value||0,ns=+$('dNS').value||0,nv=Math.min(6,Math.max(.5,+$('dNV').value||.5)),smd=+$('dSMD').value||0,base=H*.05,vis=ns*nv*smd*10,total=base+vis;
-    return {module:'Consultoría / DRO',professional,license,client,project,location,validity,payment,notes,today,total,base:total,pct:100,
-      parameters:[['Honorarios de diseño de referencia',mxn(H)],['Semanas de ejecución',dec(ns,0)],['Visitas por semana',dec(nv,1)],['SMD',mxn(smd)],['5% honorarios de diseño',mxn(base)],['Componente por visitas',mxn(vis)]],scopes:[]};
-  }
-  const S=Math.max(1,+$('aS').value||0),cbm=+$('aCBM').value||0,fc=+factorSel.value||0,fr=+$('aFR').value||0,co=S*cbm*fc,fs=15-2.5*Math.log10(S),h=co*fs*fr/100,p=pct($('arch')),frOpt=FR_OPTIONS[Number($('aFRZone').value)]||FR_OPTIONS[0];
-  return {module:'Diseño arquitectónico',professional,license,client,project,location,validity,payment,notes,today,total:h*p/100,base:h,pct:p,
-    parameters:[['Género constructivo',factorSel.options[factorSel.selectedIndex]?.text||''],['Superficie construida',`${dec(S,0)} m²`],['Costo base por m² (CBM)',mxn(cbm)],['Factor regional (FR)',`${dec(fr,2)} · Región ${frOpt.r} · ${frOpt.n}`],['Costo directo estimado (CO)',mxn(co)],['Factor de superficie (FS)',dec(fs,3)],['Honorario base (100%)',mxn(h)]],
-    scopes:[...selectedScopes('aScopes'),...selectedScopes('aExtras')]};
-}
-function proposalMarkup(d,forWord=false){
-  const rows=d.parameters.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
-  const scopeRows=d.scopes.length?d.scopes.map(s=>`<tr><td>${esc(s.name)}</td><td>${dec(s.pct,0)}%</td></tr>`).join(''):`<tr><td colspan="2">El alcance se determina conforme a las condiciones particulares de la consultoría.</td></tr>`;
-  return `
-    <div class="proposal-kicker">Propuesta profesional · ${esc(d.module)}</div>
-    <h1 class="proposal-title">Propuesta de honorarios profesionales</h1>
-    <div class="proposal-rule"></div>
-    <div class="proposal-meta">
-      <div><small>Profesionista</small><strong>${esc(d.professional)}</strong>${d.license?`<br><span>Cédula profesional: ${esc(d.license)}</span>`:''}</div>
-      <div><small>Fecha</small><strong>${esc(d.today)}</strong></div>
-      <div><small>Cliente</small><strong>${esc(d.client||'Por definir')}</strong></div>
-      <div><small>Proyecto</small><strong>${esc(d.project||d.module)}</strong>${d.location?`<br><span>${esc(d.location)}</span>`:''}</div>
-    </div>
-    <div class="proposal-section"><h3>Base de cálculo</h3><table class="proposal-table"><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <div class="proposal-section"><h3>Alcance considerado</h3><table class="proposal-table"><thead><tr><th>Servicio</th><th>Participación</th></tr></thead><tbody>${scopeRows}</tbody></table></div>
-    <div class="proposal-total"><strong>Honorarios propuestos</strong><strong>${mxn(d.total)}</strong></div>
-    <div class="proposal-section proposal-note"><h3>Condiciones</h3>
-      <p><strong>Vigencia:</strong> ${d.validity} días naturales a partir de la fecha de emisión.</p>
-      ${d.payment?`<p><strong>Forma de pago:</strong> ${esc(d.payment)}</p>`:''}
-      ${d.notes?`<p><strong>Notas:</strong> ${esc(d.notes).replace(/\n/g,'<br>')}</p>`:''}
-      <p><strong>Referencia:</strong> cálculo basado en los parámetros incorporados del arancel FCARM 2022. CBM, SMD y FR deben verificarse respecto de la vigencia y condiciones aplicables antes de formalizar la contratación.</p>
-    </div>
-    <div class="proposal-sign"><strong>${esc(d.professional)}</strong>${d.license?`<br>Cédula profesional: ${esc(d.license)}`:''}<br><span style="color:#66717d">Servicios profesionales de arquitectura</span></div>
-    <div class="proposal-author">Generado con la Calculadora de Honorarios FCARM · Idea y desarrollo por el Arq. Diego Peregrina</div>`;
-}
-function renderProposal(){if(!$('proposalPreview'))return;$('proposalPreview').innerHTML=proposalMarkup(currentProposalData())}
-function openProposal(){
-  const active=document.querySelector('.panel.active')?.id;
-  if(['arch','urban','dro'].includes(active))proposalSourceTab=active;
-  document.querySelector('[data-tab="proposal"]')?.addEventListener('click',()=>{const active=document.querySelector('.panel.active')?.id;if(['arch','urban','dro'].includes(active))proposalSourceTab=active;setTimeout(renderProposal,0)});
-document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab==='proposal'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='proposal'));
-  renderProposal(); window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',openProposal));
-['qClient','qProject','qLocation','qValidity','qPayment','qNotes','profName','profLicense'].forEach(id=>$(id)?.addEventListener('input',()=>{if($('proposal')?.classList.contains('active'))renderProposal()}));
-document.querySelectorAll('#arch input,#arch select,#urban input,#urban select,#dro input,#dro select').forEach(el=>el.addEventListener('input',()=>{if($('proposal')?.classList.contains('active'))renderProposal()}));
-$('printProposal').addEventListener('click',()=>window.print());
-$('downloadWord').addEventListener('click',()=>{
-  const d=currentProposalData();
-  const body=proposalMarkup(d,true);
-  const word=`<!doctype html><html><head><meta charset="utf-8"><title>Propuesta de honorarios</title><style>
-  @page{size:letter;margin:18mm}body{font-family:Arial,sans-serif;color:#1d2329;font-size:10.5pt;line-height:1.4}.proposal-kicker{font-size:8pt;letter-spacing:1.4px;text-transform:uppercase;color:#66717d}.proposal-title{font-size:24pt;margin:6px 0;color:#17202a}.proposal-rule{height:4px;background:#2558a6;width:75px;margin:12px 0 22px}.proposal-meta{width:100%;margin-bottom:20px}.proposal-meta div{display:inline-block;width:47%;vertical-align:top;margin:0 2% 10px 0;border-bottom:1px solid #dce2e8;padding-bottom:6px}.proposal-meta small{display:block;color:#66717d}.proposal-section{margin:20px 0}.proposal-section h3{font-size:10pt;text-transform:uppercase;color:#2558a6;border-bottom:1px solid #2558a6;padding-bottom:5px}.proposal-table{width:100%;border-collapse:collapse}.proposal-table th,.proposal-table td{border-bottom:1px solid #dce2e8;padding:7px;text-align:left}.proposal-table th{background:#edf3fb;color:#244d84}.proposal-table td:last-child,.proposal-table th:last-child{text-align:right}.proposal-total{background:#17202a;color:#fff;padding:12px 14px;margin:20px 0;font-size:12pt}.proposal-total strong:last-child{float:right;font-size:15pt}.proposal-note{font-size:9pt;color:#4e5964}.proposal-sign{margin-top:30px;border-top:1px solid #dce2e8;padding-top:14px}.proposal-author{text-align:center;color:#7a848e;font-size:8pt;margin-top:25px}</style></head><body>${body}</body></html>`;
-  const blob=new Blob(['\ufeff',word],{type:'application/msword;charset=utf-8'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');
-  const safe=(d.project||'propuesta_honorarios').replace(/[^\p{L}\p{N}_-]+/gu,'_').replace(/^_+|_+$/g,'').slice(0,60)||'propuesta_honorarios';
-  a.href=url;a.download=`${safe}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-});
-
-</script>
 <script>
 const DATA={"factors": [{"code": "A-1", "factor": 1.39, "name": "Asilos, Orfelinatos"}, {"code": "A-2", "factor": 1.06, "name": "Casas de Empeño"}, {"code": "A-3", "factor": 1.55, "name": "Centros de Rehabilitación"}, {"code": "A-4", "factor": 1.24, "name": "Centros de Protección"}, {"code": "A-5", "factor": 1.2, "name": "Dormitorios Públicos"}, {"code": "A-6", "factor": 1.16, "name": "Guarderías"}, {"code": "B-1", "factor": 1.45, "name": "Agencias de Vehículos"}, {"code": "B-2", "factor": 1.04, "name": "Centros de Abasto"}, {"code": "B-3", "factor": 2.12, "name": "Centros Comerciales"}, {"code": "B-4", "factor": 1.86, "name": "Centros de Exposiciones"}, {"code": "B-5", "factor": 1.79, "name": "Edificios Comerciales y Oficinas"}, {"code": "B-6", "factor": 1.89, "name": "Farmacias y Doguerías"}, {"code": "B-7", "factor": 1.89, "name": "Ferreterías y Tlapalerías"}, {"code": "B-8", "factor": 2.07, "name": "Joyerías"}, {"code": "B-9", "factor": 1.89, "name": "Librerías"}, {"code": "B-10", "factor": 1.04, "name": "Mercados"}, {"code": "B-11", "factor": 1.69, "name": "Supermercados y Autoservicios"}, {"code": "B-12", "factor": 1.66, "name": "Interiorismo Comercial"}, {"code": "B-13", "factor": 1.94, "name": "Tiendas de Departamentos"}, {"code": "B-14", "factor": 2.07, "name": "Tiendas Especializadas"}, {"code": "B-15", "factor": 1.37, "name": "Locales Comerciales"}, {"code": "B-16", "factor": 0.62, "name": "Stands"}, {"code": "C-1", "factor": 1.45, "name": "Agencias de Noticias"}, {"code": "C-2", "factor": 1.55, "name": "Centrales Telefónicas"}, {"code": "C-3", "factor": 1.14, "name": "Centros de Internet"}, {"code": "C-4", "factor": 1.24, "name": "Edificio de Correos"}, {"code": "C-5", "factor": 1.24, "name": "Edificios de Telégrafos"}, {"code": "C-6", "factor": 2.28, "name": "Estudios de Audio y Video"}, {"code": "C-7", "factor": 1.97, "name": "Estudios de Cine"}, {"code": "C-8", "factor": 2.17, "name": "Estudios de T.V."}, {"code": "C-9", "factor": 1.14, "name": "Paquetería y Envíos"}, {"code": "C-10", "factor": 1.24, "name": "Prensa"}, {"code": "C-11", "factor": 1.59, "name": "Radiodifusoras"}, {"code": "d-1.1", "factor": 2.07, "name": "Terminales Aereas"}, {"code": "d-1.2", "factor": 1.27, "name": "Hangares"}, {"code": "d-1.3", "factor": 2.69, "name": "Torres de Control"}, {"code": "d-1.4", "factor": 0.31, "name": "Obra  Exterior"}, {"code": "D-2", "factor": 1.24, "name": "Casetas de Peaje"}, {"code": "D-3", "factor": 1.35, "name": "Centrales de Autobuses"}, {"code": "D-4", "factor": 1.35, "name": "Estaciones de Ferrocarril"}, {"code": "D-5", "factor": 1.76, "name": "Estaciones de Transporte Colec."}, {"code": "D-6", "factor": 1.76, "name": "Instalaciones Portuarias"}, {"code": "D-7", "factor": 1.04, "name": "Paraderos de Autobuses"}, {"code": "D-8", "factor": 0.58, "name": "Talleres de Mantenimiento"}, {"code": "D-9", "factor": 1.04, "name": "Taquillas y Salas de Espera"}, {"code": "E-1", "factor": 1.35, "name": "Auditorios"}, {"code": "E-2", "factor": 1.45, "name": "Bibliotecas"}, {"code": "E-3", "factor": 1.24, "name": "Casas de Cultura"}, {"code": "E-4", "factor": 1.24, "name": "Centros de Arte"}, {"code": "E-5", "factor": 1.35, "name": "Editoriales"}, {"code": "E-6", "factor": 1.55, "name": "Galerías de Arte"}, {"code": "E-7", "factor": 2.48, "name": "Monumentos"}, {"code": "E-8", "factor": 1.55, "name": "Museos"}, {"code": "E-9", "factor": 2.07, "name": "Pabellones Internacionales y Nac."}, {"code": "E-10", "factor": 2.17, "name": "Salas de Concierto"}, {"code": "E-11", "factor": 1.24, "name": "Talleres de Arte"}, {"code": "E-12", "factor": 2.07, "name": "Teatros"}, {"code": "F-1", "factor": 3.01, "name": "Albercas Recreativas"}, {"code": "F-2", "factor": 1.45, "name": "Boliche"}, {"code": "F-3", "factor": 0.21, "name": "Canchas Descubiertas"}, {"code": "F-4", "factor": 1.24, "name": "Clubes Deportivos"}, {"code": "F-5", "factor": 0.83, "name": "Gimnasios y Canchas Cubiertas"}, {"code": "f-6.1", "factor": 1.24, "name": "Casa Club"}, {"code": "f-6.2", "factor": 0.04, "name": "Campo de Golf"}, {"code": "f-7.1", "factor": 1.24, "name": "Casa Club"}, {"code": "f-7.2", "factor": 0.04, "name": "Campo de Tiro"}, {"code": "F-8", "factor": 1.04, "name": "Unidades Deportivas"}, {"code": "G-1", "factor": 1.08, "name": "Academias"}, {"code": "G-2", "factor": 1.45, "name": "Céntros de Investigación"}, {"code": "G-3", "factor": 1.35, "name": "Campus de Educación Superior"}, {"code": "G-4", "factor": 1.15, "name": "Escuelas Preescolares"}, {"code": "G-5", "factor": 1.15, "name": "Escuelas Primarias"}, {"code": "G-6", "factor": 1.15, "name": "Escuelas Secundarias"}, {"code": "G-7", "factor": 1.39, "name": "Escuelas Preparatorias"}, {"code": "G-8", "factor": 1.39, "name": "Escuelas Vocacionales"}, {"code": "G-9", "factor": 1.39, "name": "Escuelas Técnicas"}, {"code": "G-10", "factor": 1.45, "name": "Escuelas de Educación Especial"}, {"code": "G-11", "factor": 1.45, "name": "Escuelas de Educación Superior"}, {"code": "G-12", "factor": 1.24, "name": "Internados"}, {"code": "G-13", "factor": 1.45, "name": "Laboratorios"}, {"code": "G-14", "factor": 1.45, "name": "Laboratorios de Enseñanza"}, {"code": "G-15", "factor": 1.39, "name": "Normales"}, {"code": "H-1", "factor": 1.2, "name": "Bancos"}, {"code": "H-2", "factor": 1.28, "name": "Casas de Bolsa"}, {"code": "H-3", "factor": 1.28, "name": "Casas de Cambio"}, {"code": "H-4", "factor": 1.22, "name": "Oficinas Centrales y Regionales"}, {"code": "H-5", "factor": 1.2, "name": "Organizaciones Auxiliares"}, {"code": "I-1", "factor": 1.14, "name": "Archivos"}, {"code": "i-2.1", "factor": 1.35, "name": "Edificios"}, {"code": "i-2.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "I-3", "factor": 1.2, "name": "Cuarteles Militares"}, {"code": "I-4", "factor": 1.38, "name": "Oficinas Estatales"}, {"code": "I-5", "factor": 1.38, "name": "Oficinas Federales"}, {"code": "I-6", "factor": 1.05, "name": "Oficinas Municipales"}, {"code": "I-7", "factor": 1.64, "name": "Palacios de Gobierno"}, {"code": "I-8", "factor": 1.59, "name": "Sedes Judiciales"}, {"code": "I-9", "factor": 1.59, "name": "Sedes Legislativas"}, {"code": "J-1", "factor": 1.04, "name": "Condominios de Interés Social"}, {"code": "J-2", "factor": 1.34, "name": "Condominios de Interés Medio"}, {"code": "J-3", "factor": 1.57, "name": "Condominios Residenciales"}, {"code": "J-4", "factor": 1.49, "name": "Edificios de Apartamentos"}, {"code": "J-5", "factor": 0.84, "name": "Vivienda Progresiva"}, {"code": "J-6", "factor": 1, "name": "Vivienda de Interés Social"}, {"code": "J-7", "factor": 1.14, "name": "Vivienda de Interés Medio"}, {"code": "J-8", "factor": 1.28, "name": "Casa-Habitación Residencial"}, {"code": "J-9", "factor": 1.89, "name": "Residencias de Lujo"}, {"code": "K-1", "factor": 0.06, "name": "Áreas Exteriores"}, {"code": "K-2", "factor": 0.55, "name": "Bodegas y Almacenes"}, {"code": "K-3", "factor": 1.22, "name": "Laboratorios"}, {"code": "K-4", "factor": 0.86, "name": "Naves Industriales"}, {"code": "K-5", "factor": 1.18, "name": "Oficinas"}, {"code": "K-6", "factor": 1.14, "name": "Servicios del Personal"}, {"code": "K-7", "factor": 0.57, "name": "Talleres"}, {"code": "L-1", "factor": 1.14, "name": "Casetas de Seguridad Pública"}, {"code": "l-2.1", "factor": 1.18, "name": "Edificicios"}, {"code": "l-2.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "l-3.1", "factor": 1.18, "name": "Edificicios"}, {"code": "l-3.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "L-4", "factor": 1.2, "name": "Cuarteles de Seguridad Pública"}, {"code": "l-5.1", "factor": 1.18, "name": "Edificicios"}, {"code": "l-5.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "l-6.1", "factor": 1.18, "name": "Edificicios"}, {"code": "l-6.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "L-7", "factor": 1.22, "name": "Laboratorios Especializados"}, {"code": "L-8", "factor": 1.3, "name": "SEMEFO´s"}, {"code": "M-1", "factor": 1.3, "name": "Arenas Deportivas"}, {"code": "M-2", "factor": 1.86, "name": "Autódromos"}, {"code": "M-3", "factor": 1.04, "name": "Billares"}, {"code": "M-4", "factor": 1.3, "name": "Centros Nocturnos"}, {"code": "M-5", "factor": 1.76, "name": "Cinemas"}, {"code": "M-6", "factor": 1.32, "name": "Estadios"}, {"code": "M-7", "factor": 1.86, "name": "Hipódromo"}, {"code": "M-8", "factor": 0.04, "name": "Jardines (zoológicos, botánicos)"}, {"code": "M-9", "factor": 1.45, "name": "Lienzos Charros"}, {"code": "M-10", "factor": 1.3, "name": "Palenques"}, {"code": "M-11", "factor": 0.04, "name": "Parques"}, {"code": "M-12", "factor": 1.86, "name": "Planetarios"}, {"code": "M-13", "factor": 0.05, "name": "Plazas Públicas"}, {"code": "M-14", "factor": 1.41, "name": "Plazas de Toros"}, {"code": "m-15.1", "factor": 1.55, "name": "Edificicios"}, {"code": "m-15.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "N-1", "factor": 1.86, "name": "Basílicas y Catedrales"}, {"code": "N-2", "factor": 1.97, "name": "Capillas"}, {"code": "N-3", "factor": 1.3, "name": "Casas Pastorales"}, {"code": "N-4", "factor": 1.2, "name": "Conventos y Monasterios"}, {"code": "N-5", "factor": 1.76, "name": "Iglesias"}, {"code": "N-6", "factor": 1.55, "name": "Sede Arzobispal"}, {"code": "O-1", "factor": 1.14, "name": "Centros de Rehabilitación Física"}, {"code": "O-2", "factor": 1.08, "name": "Centros de Salud"}, {"code": "O-3", "factor": 1.07, "name": "Clínicas"}, {"code": "O-4", "factor": 1.08, "name": "Consultorios"}, {"code": "O-5", "factor": 1.04, "name": "Dispensarios"}, {"code": "O-6", "factor": 1.24, "name": "Labarorios de Análisis Clínico"}, {"code": "O-7", "factor": 1.24, "name": "Laboratorios de Rayos X"}, {"code": "O-8", "factor": 1.92, "name": "Hospitales"}, {"code": "O-9", "factor": 1.22, "name": "Laboratorios Especializados"}, {"code": "O-10", "factor": 1.04, "name": "Unidades de Servicio Médico"}, {"code": "O-11", "factor": 1.04, "name": "Centros Antirábicos"}, {"code": "P-1", "factor": 1.14, "name": "Agencias de Viaje"}, {"code": "P-2", "factor": 0, "name": "Balnearios"}, {"code": "p-2.1", "factor": 1.14, "name": "Edificicios"}, {"code": "p-2.2", "factor": 0.06, "name": "Obra Exterior"}, {"code": "P-3", "factor": 0.05, "name": "Camping"}, {"code": "P-4", "factor": 2.01, "name": "Centros de Convenciones"}, {"code": "P-5", "factor": 3.39, "name": "Complejos Hoteleros"}, {"code": "P-6", "factor": 0.06, "name": "Complejos y Hoteles (Obra Ext.)"}, {"code": "P-7", "factor": 2.82, "name": "Hoteles de cinco estrellas"}, {"code": "P-8", "factor": 1.94, "name": "Hoteles de cuatro estrellas"}, {"code": "P-9", "factor": 1.55, "name": "Hoteles de tres estrellas o menos"}, {"code": "P-10", "factor": 1.45, "name": "Moteles"}, {"code": "P-11", "factor": 0.06, "name": "Trailer Park"}, {"code": "P-12", "factor": 2.07, "name": "SPA´s"}, {"code": "Q-1", "factor": 1.86, "name": "Bares y Cantinas"}, {"code": "Q-2", "factor": 1.45, "name": "Cafeterías"}, {"code": "Q-3", "factor": 1.24, "name": "Cocinas Rápidas"}, {"code": "Q-4", "factor": 1.18, "name": "Comedores"}, {"code": "Q-5", "factor": 1.76, "name": "Restaurantes"}, {"code": "R-1", "factor": 1.33, "name": "Baños Públicos"}, {"code": "R-2", "factor": 1, "name": "Estacionamientos Descubiertos"}, {"code": "R-3", "factor": 1.16, "name": "Estacionamientos Cubiertos"}, {"code": "R-4", "factor": 1.33, "name": "Gasolineras"}], "arch": [{"name": "I.1- DISEÑO CONCEPTUAL", "pct": 11.0}, {"name": "I.2.-ANTEPROYECTO", "pct": 20.0}, {"name": "I.3.- DISEÑO EJECUTIVO", "pct": 35.0}, {"name": "I.4.- ESTRUCTURA", "pct": 12.0}, {"name": "I.5.- INSTALACIÓN ELÉCTRICA", "pct": 10.0}, {"name": "I.6.- INSTALACIÓN HIDROSANITARIA", "pct": 8.0}, {"name": "I.7.- INSTALACIÓN DE GAS", "pct": 4.0}], "archExtra": [{"name": "I.7.- INSTALACIÓN DE AIRE ACONDICIONADO", "pct": 11.0}, {"name": "I.8.- INSTALACIÓN DE VOZ Y DATOS", "pct": 5.0}, {"name": "I.9.- INSTALACIÓN DE TELEFONÍA Y SONIDO", "pct": 5.0}, {"name": "I.10.- INSTALACIÓN DE GASES MEDICINALES", "pct": 8.0}, {"name": "I.11.- INSTALACIÓN DE VAPOR Y CONDENSADOS", "pct": 8.0}, {"name": "I.12.- INSTALACIÓN DE PARARRAYOS", "pct": 3.0}, {"name": "I.13.- INSTALACIÓN CONTRA INCENDIO", "pct": 8.0}], "urb": [{"name": "II.1.- VIABILIDAD", "pct": 6.0}, {"name": "II.2.-DISEÑO CONCEPTUAL", "pct": 10.0}, {"name": "II.3.-ANTEPROYECTO", "pct": 22.0}, {"name": "II.4.- DISEÑO EJECUTIVO", "pct": 34.0}, {"name": "II.5.- INGENIERÍA ELÉCTRICA", "pct": 10.0}, {"name": "II.6.- INGENIERÍA DEL AGUA", "pct": 18.0}], "urbExtra": [{"name": "II.a.- INSTALACIÓN DE TELEFONÍA SUBTERRANEA", "pct": 10.0}, {"name": "II.b.- INSTALACIÓN SUBTERRÁNEA DE GAS", "pct": 10.0}]};
 const mxn=n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0}).format(Number.isFinite(n)?n:0);
@@ -389,5 +289,122 @@ setChaiMode();
 syncFR();
 initFRMap();
 calcAll();
+
+
+// ===== Propuesta profesional: vista previa y Word editable local =====
+let proposalSourceTab='arch';
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function selectedScopes(containerId){
+  return [...$(containerId).querySelectorAll('.check')]
+    .filter(x=>x.querySelector('input')?.checked)
+    .map(x=>({
+      name:(x.querySelector('label')?.textContent||'Servicio').replace(/\s·\s[\d.]+%$/,''),
+      pct:Number(x.querySelector('input')?.dataset.pct||0)
+    }));
+}
+function currentProposalData(){
+  calcAll();
+  const professional=$('profName').value.trim()||'Profesionista no indicado';
+  const license=$('profLicense').value.trim();
+  const client=$('qClient').value.trim();
+  const project=$('qProject').value.trim();
+  const location=$('qLocation').value.trim();
+  const validity=Math.max(1,Number($('qValidity').value)||15);
+  const payment=$('qPayment').value.trim();
+  const notes=$('qNotes').value.trim();
+  const today=new Intl.DateTimeFormat('es-MX',{day:'2-digit',month:'long',year:'numeric'}).format(new Date());
+  if(proposalSourceTab==='urban'){
+    const S=Math.max(.01,+$('uS').value||0),smd=+$('uSMD').value||0,type=$('uType').value,d=+$('uD').value||0;
+    const fs=1050-125*Math.log10(S),fd=densityFactor(type,d),h=S*fs*smd*fd,p=pct($('urban'));
+    return {module:'Diseño urbano',professional,license,client,project,location,validity,payment,notes,today,total:h*p/100,base:h,pct:p,
+      parameters:[['Superficie',`${dec(S,2)} ha`],['SMD',mxn(smd)],['Factor de superficie (FS)',dec(fs,2)],['Factor de densidad (FD)',dec(fd,2)],['Honorario base (100%)',mxn(h)]],
+      scopes:[...selectedScopes('uScopes'),...selectedScopes('uExtras')]};
+  }
+  if(proposalSourceTab==='dro'){
+    const H=+$('dH').value||0,ns=+$('dNS').value||0,nv=Math.min(6,Math.max(.5,+$('dNV').value||.5)),smd=+$('dSMD').value||0;
+    const droBase=H*.05,vis=ns*nv*smd*10,total=droBase+vis;
+    return {module:'Consultoría / DRO',professional,license,client,project,location,validity,payment,notes,today,total,base:total,pct:100,
+      parameters:[['Honorarios de diseño de referencia',mxn(H)],['Semanas de ejecución',dec(ns,0)],['Visitas por semana',dec(nv,1)],['SMD',mxn(smd)],['5% honorarios de diseño',mxn(droBase)],['Componente por visitas',mxn(vis)]],scopes:[]};
+  }
+  const S=Math.max(1,+$('aS').value||0),cbm=+$('aCBM').value||0,fc=+factorSel.value||0,fr=+$('aFR').value||0;
+  const co=S*cbm*fc,fs=15-2.5*Math.log10(S),h=co*fs*fr/100,p=pct($('arch'));
+  const frOpt=FR_OPTIONS[Number($('aFRZone').value)]||FR_OPTIONS[0];
+  return {module:'Diseño arquitectónico',professional,license,client,project,location,validity,payment,notes,today,total:h*p/100,base:h,pct:p,
+    parameters:[['Género constructivo',factorSel.options[factorSel.selectedIndex]?.text||''],['Superficie construida',`${dec(S,0)} m²`],['Costo base por m² (CBM)',mxn(cbm)],['Factor regional (FR)',`${dec(fr,2)} · Región ${frOpt.r} · ${frOpt.n}`],['Costo directo estimado (CO)',mxn(co)],['Factor de superficie (FS)',dec(fs,3)],['Honorario base (100%)',mxn(h)]],
+    scopes:[...selectedScopes('aScopes'),...selectedScopes('aExtras')]};
+}
+function proposalMarkup(d){
+  const rows=d.parameters.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
+  const scopeRows=d.scopes.length?d.scopes.map(s=>`<tr><td>${esc(s.name)}</td><td>${dec(s.pct,0)}%</td></tr>`).join(''):`<tr><td colspan="2">El alcance se determina conforme a las condiciones particulares de la consultoría.</td></tr>`;
+  return `<div class="proposal-kicker">Propuesta profesional · ${esc(d.module)}</div>
+    <h1 class="proposal-title">Propuesta de honorarios profesionales</h1><div class="proposal-rule"></div>
+    <div class="proposal-meta">
+      <div><small>Profesionista</small><strong>${esc(d.professional)}</strong>${d.license?`<br><span>Cédula profesional: ${esc(d.license)}</span>`:''}</div>
+      <div><small>Fecha</small><strong>${esc(d.today)}</strong></div>
+      <div><small>Cliente</small><strong>${esc(d.client||'Por definir')}</strong></div>
+      <div><small>Proyecto</small><strong>${esc(d.project||d.module)}</strong>${d.location?`<br><span>${esc(d.location)}</span>`:''}</div>
+    </div>
+    <div class="proposal-section"><h3>Base de cálculo</h3><table class="proposal-table"><thead><tr><th>Concepto</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="proposal-section"><h3>Alcance considerado</h3><table class="proposal-table"><thead><tr><th>Servicio</th><th>Participación</th></tr></thead><tbody>${scopeRows}</tbody></table></div>
+    <div class="proposal-total"><strong>Honorarios propuestos</strong><strong>${mxn(d.total)}</strong></div>
+    <div class="proposal-section proposal-note"><h3>Condiciones</h3><p><strong>Vigencia:</strong> ${d.validity} días naturales a partir de la fecha de emisión.</p>
+      ${d.payment?`<p><strong>Forma de pago:</strong> ${esc(d.payment)}</p>`:''}${d.notes?`<p><strong>Notas:</strong> ${esc(d.notes).replace(/\n/g,'<br>')}</p>`:''}
+      <p><strong>Referencia:</strong> cálculo basado en los parámetros incorporados del arancel FCARM 2022. CBM, SMD y FR deben verificarse respecto de la vigencia y condiciones aplicables antes de formalizar la contratación.</p></div>
+    <div class="proposal-sign"><strong>${esc(d.professional)}</strong>${d.license?`<br>Cédula profesional: ${esc(d.license)}`:''}<br><span style="color:#66717d">Servicios profesionales de arquitectura</span></div>
+    <div class="proposal-author">Generado con la Calculadora de Honorarios FCARM · Idea y desarrollo por el Arq. Diego Peregrina</div>`;
+}
+function renderProposal(){
+  if(!$('proposalPreview'))return;
+  $('proposalPreview').innerHTML=proposalMarkup(currentProposalData());
+}
+function showPanel(id){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));
+}
+function openProposal(){
+  const active=document.querySelector('.panel.active')?.id;
+  if(['arch','urban','dro'].includes(active))proposalSourceTab=active;
+  showPanel('proposal');
+  renderProposal();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function proposalWordHtml(d){
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Propuesta de honorarios</title><style>
+  @page{size:letter;margin:18mm}body{font-family:Arial,sans-serif;color:#1d2329;font-size:10.5pt;line-height:1.4}.proposal-kicker{font-size:8pt;letter-spacing:1.4px;text-transform:uppercase;color:#66717d}.proposal-title{font-size:24pt;margin:6px 0;color:#17202a}.proposal-rule{height:4px;background:#2558a6;width:75px;margin:12px 0 22px}.proposal-meta{width:100%;margin-bottom:20px}.proposal-meta div{display:inline-block;width:47%;vertical-align:top;margin:0 2% 10px 0;border-bottom:1px solid #dce2e8;padding-bottom:6px}.proposal-meta small{display:block;color:#66717d}.proposal-section{margin:20px 0}.proposal-section h3{font-size:10pt;text-transform:uppercase;color:#2558a6;border-bottom:1px solid #2558a6;padding-bottom:5px}.proposal-table{width:100%;border-collapse:collapse}.proposal-table th,.proposal-table td{border-bottom:1px solid #dce2e8;padding:7px;text-align:left}.proposal-table th{background:#edf3fb;color:#244d84}.proposal-table td:last-child,.proposal-table th:last-child{text-align:right}.proposal-total{background:#17202a;color:#fff;padding:12px 14px;margin:20px 0;font-size:12pt}.proposal-total strong:last-child{float:right;font-size:15pt}.proposal-note{font-size:9pt;color:#4e5964}.proposal-sign{margin-top:30px;border-top:1px solid #dce2e8;padding-top:14px}.proposal-author{text-align:center;color:#7a848e;font-size:8pt;margin-top:25px}</style></head><body>${proposalMarkup(d)}</body></html>`;
+}
+function safeFilename(v){
+  return (v||'propuesta_honorarios').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60)||'propuesta_honorarios';
+}
+async function deliverWordFile(){
+  const d=currentProposalData();
+  const filename=`${safeFilename(d.project)}.doc`;
+  const blob=new Blob(['\ufeff',proposalWordHtml(d)],{type:'application/msword;charset=utf-8'});
+  try{
+    if(typeof File!=='undefined' && navigator.share && navigator.canShare){
+      const file=new File([blob],filename,{type:'application/msword'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Propuesta de honorarios'});
+        return;
+      }
+    }
+  }catch(err){
+    if(err?.name==='AbortError')return;
+  }
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},1500);
+}
+
+document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',openProposal));
+document.querySelector('[data-tab="proposal"]')?.addEventListener('click',()=>{
+  const active=document.querySelector('.panel.active')?.id;
+  if(['arch','urban','dro'].includes(active))proposalSourceTab=active;
+  setTimeout(renderProposal,0);
+});
+['qClient','qProject','qLocation','qValidity','qPayment','qNotes','profName','profLicense'].forEach(id=>$(id)?.addEventListener('input',()=>{if($('proposal')?.classList.contains('active'))renderProposal()}));
+document.querySelectorAll('#arch input,#arch select,#urban input,#urban select,#dro input,#dro select').forEach(el=>el.addEventListener('input',()=>{if($('proposal')?.classList.contains('active'))renderProposal()}));
+$('printProposal')?.addEventListener('click',()=>{renderProposal();window.print()});
+$('downloadWord')?.addEventListener('click',deliverWordFile);
 </script>
 </body></html>
