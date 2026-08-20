@@ -1004,5 +1004,368 @@
         "pct": 10.0
       }
     ]
-  }
+  },
+  "regionalFactors": [
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de la Cd. de México, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos del Estado de México, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Hidalgo, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Morelos, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Guerrero, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Oaxaca, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Puebla, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "I",
+      "college": "Colegio de Arquitectos de Tlaxcala, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Aguascalientes, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Celaya, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Guanajuato, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Irapuato",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de León, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Salamanca, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de San Miguel de Allende, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Michoacán, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Huasteca Potosina",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Querétaro, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de San Luis Potosí, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Zacatecas, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos Michoacanos de Zamora",
+      "fr": 0.95
+    },
+    {
+      "region": "II",
+      "college": "Colegio de Arquitectos de Valle de Santiago, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos del Estado de Veracruz-Xalapa",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Puerto de Veracruz, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Poza Rica, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos del Estado de Córdoba y Orizaba",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Chiapas, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos Chiapanecos, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos Tabasqueños, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Campeche, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Cd. del Carmen, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos Yucatecos, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Quintana Roo, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Cancún, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Cozumel y Solidaridad, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "III",
+      "college": "Colegio de Arquitectos de Rivera Maya, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos del Sur de Tamaulipas, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Reynosa, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Nuevo Laredo, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Noreste de Tamaulipas, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Tamaulipas Centro, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Nuevo León, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Saltillo, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Monclova, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Región Carbonífera, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Piedras Negras, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Comarca Lagunera, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Chihuahua, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Ciudad Juárez, A.C.",
+      "fr": 1.1
+    },
+    {
+      "region": "IV",
+      "college": "Colegio de Arquitectos de Durango, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos del Estado de Jalisco, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos del Sur de Jalisco, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Puerto Vallarta, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Nayarit, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Colima, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Sinaloa, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Mazatlán, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos del Norte de Sinaloa, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Guasave, A.C.",
+      "fr": 0.95
+    },
+    {
+      "region": "V",
+      "college": "Colegio de Arquitectos de Baja California Sur, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos de Hermosillo, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos de Cd. Obregón, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos de Nogales, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos de Agua Prieta, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos de San Luis Río Colorado, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VI",
+      "college": "Colegio de Arquitectos del Sur de Sonora, A.C.",
+      "fr": 1.0
+    },
+    {
+      "region": "VII",
+      "college": "Colegio de Arquitectos de Ensenada, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VII",
+      "college": "Colegio de Arquitectos de Mexicalli, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VII",
+      "college": "Colegio de Arquitectos de Tijuana, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VII",
+      "college": "Colegio de Arquitectos de Playas del Rosarito, A.C.",
+      "fr": 1.05
+    },
+    {
+      "region": "VII",
+      "college": "Colegio de Arquitectos de Tecate, A.C.",
+      "fr": 1.05
+    }
+  ],
+  "regionalFactorDefault": {
+    "region": "V",
+    "college": "Colegio de Arquitectos de Sinaloa, A.C.",
+    "fr": 0.95
+  },
+  "regionalFactorNote": "Tabla incorporada a partir de la información proporcionada para esta versión; verificar vigencia antes de uso profesional formal."
 }
