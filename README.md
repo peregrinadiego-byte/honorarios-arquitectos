@@ -20,6 +20,10 @@ El archivo fuente indica CBM = $8,025 y SMD = $172.87. Son parámetros de refere
 
 La aplicación calcula honorarios a partir de las fórmulas del archivo fuente. No sustituye un presupuesto de obra por catálogo de conceptos y análisis de precios unitarios.
 
+## Autoría
+La interfaz muestra: **Idea y desarrollo por el Arq. Diego Peregrina**.
 
-## Ajustes de identificación y FR
-La aplicación incluye nombre completo del profesionista, cédula profesional opcional y una explicación ampliada del Factor Regional (FR). El mapa regional queda preparado como módulo de referencia, pero no asigna factores automáticamente porque la tabla I-C no está incluida en el archivo Excel FCARM 2022 proporcionado.
+## Asistente Chai
+La aplicación incorpora una primera interfaz de consulta llamada **Chai**. En GitHub Pages funciona en modo de guía local para dudas frecuentes sobre FR, FC, CBM, FS, alcance y lectura de resultados.
+
+Para convertir Chai en un agente con IA real, debe configurarse un endpoint seguro (por ejemplo, una función serverless en Vercel, Netlify o Cloudflare). No coloque una API key dentro de `index.html`, porque quedaría expuesta públicamente. El código ya incluye la constante `CHAI_ENDPOINT` para conectar ese servicio posteriormente.
