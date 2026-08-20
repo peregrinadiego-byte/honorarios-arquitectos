@@ -1,4 +1,4 @@
-# Calculadora de Honorarios FCARM 2022
+# Calculadora de Honorarios para Arquitectos y Constructores de Sinaloa
 
 Aplicación web estática para estimar honorarios profesionales de arquitectura con base en los parámetros y fórmulas incorporados del archivo Formula-Aranceles-FCARM-2022.xlsx.
 
